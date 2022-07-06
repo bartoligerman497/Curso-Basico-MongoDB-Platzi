@@ -68,3 +68,28 @@ $ db.DBNAME.findOne()
 
 saber que DB estamos usando
 $ db
+
+Clase 9 Bases de datos, Colecciones y Documentos en MongoDB
+
+Las Bases de Datos son los contenedores físicos para nuestras colecciones. Cada base de datos tiene un archivo propio en el sistema de archivos de nuestra computadora o servidor y un Cluster puede tener múltiples bases de datos.
+
+Las Colecciones son agrupaciones de documentos. Son equivalentes a las tablas en bases de datos relacionales pero NO nos imponen un esquema o estructura rígida para guardar información.
+
+Los Documentos son registros dentro de las colecciones. Son la unidad básica de MongoDB y son análogos a los objetos JSON pero en realidad son BSON.
+
+Base de datos:
+
+Contenedor físico de colecciones.
+Cada base de datos tiene su archivo propio en el sistema de archivos.
+Un cluster puede tener múltiples bases de datos.
+
+Colecciones:
+
+Agrupación de documentos.
+Equivalente a una tabla en las bases de datos relacionales.
+No impone un esquema.
+Documentos:
+
+Un registro dentro de una colección.
+Es análogo a un objeto JSON (BSON).
+La unidad básica dentro de MongoDB.
