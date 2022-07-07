@@ -69,6 +69,10 @@ $ db.DBNAME.findOne()
 saber que DB estamos usando
 $ db
 
+db.inventory.insertOne(
+        { item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } }
+)
+
 Clase 9 Bases de datos, Colecciones y Documentos en MongoDB
 
 Las Bases de Datos son los contenedores físicos para nuestras colecciones. Cada base de datos tiene un archivo propio en el sistema de archivos de nuestra computadora o servidor y un Cluster puede tener múltiples bases de datos.
@@ -93,3 +97,143 @@ Documentos:
 Un registro dentro de una colección.
 Es análogo a un objeto JSON (BSON).
 La unidad básica dentro de MongoDB.
+
+Clase 10 Operaciones CRUD desde la consola de MongoDB
+
+Instrucciones y comandos de la clase:
+
+Conexión con el cluster de MongoDB Atlas: mongo "URL DE NUESTRO CLUSTER", (recuerda añadir tu IP a la lista de IPs permitidas para no tener problemas en esta parte).
+
+Listar las bases de datos de nuestro cluster: show dbs.
+
+Seleccionar una base de datos: use NOMBRE_BD. Debemos crear por lo menos un documento si la base de datos es nueva porque MongoDB no crea bases de datos vacías.
+
+Recordar qué base de datos estamos usando: db.
+
+Listar las colecciones de nuestra base de datos: show collections.
+
+Crear una colección (opcional) y añadir un elemento en formato JSON: db.NOMBRE_COLECCIÓN.insertOne({ ... }). La base de datos responde true si la operación fue exitosa y crea el campo irrepetible de _id si nosotros no lo especificamos.
+
+Crear una colección (opcional) y añadir algunos elementos en formato JSON: db.NOMBRE_COLECCIÓN.insertMany([{ ... }, { ... }]). Recibe un array de elementos y devuelve todos los IDs de los elementos que se crearon correctamente.
+
+Encontrar elementos en una colección: db.NOMBRE_COLECCIÓN.find() Podemos aplicar filtros si queremos o encontrar solo el primer resultado con el método findOne().
+
+Listar todos los posibles comandos que podemos ejecutar: db.NOMBRE_COLECCIÓN.help().
+
+# Conectarse a MongoDB
+mongo <URI Atlas>
+
+
+# Usar la base de datos creada de platzi
+use platzi-db
+
+
+# El campo _id si no es agregado por nosotros de forma explícita, MongoDB lo agrega por nosotros como un ObjectId
+# el campo _id es obligatorio en todos los documentos
+
+Siguiendo la Clase
+db.inventory.find( { item: "canvas" } ).pretty()
+db.inventory.find( { item: "canvas" } ).count()
+db.inventory.findOne()
+db.inventory.findOne({_id: ObjectId("")})
+
+Cantidad menor a 125 espacificando el id
+db.inventory.findOne({_id: ObjectId(""), qty: {$lte:125}})
+
+db.inventory.updateOne({_id: ObjectId("")}, {$set: {qty:130}})
+
+
+# ---------------------------------Create-----------------------------
+db.inventory.insertOne({_id:"soy id", item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } })
+
+db.inventory.insertOne({ item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } })
+
+db.inventory.insertMany( [
+   { item: "canvas", qty: 100, size: { h: 28, w: 35.5, uom: "cm" }, status: "A" },
+   { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "mat", qty: 85, size: { h: 27.9, w: 35.5, uom: "cm" }, status: "A" },
+   { item: "mousepad", qty: 25, size: { h: 19, w: 22.85, uom: "cm" }, status: "P" },
+   { item: "notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, status: "P" },
+   { item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D" },
+   { item: "planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, status: "D" },
+   { item: "postcard", qty: 45, size: { h: 10, w: 15.25, uom: "cm" }, status: "A" },
+   { item: "sketchbook", qty: 80, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "sketch pad", qty: 95, size: { h: 22.85, w: 30.5, uom: "cm" }, status: "A" }
+] )
+
+db.inventory.insertOne({ _id: "one", item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } })
+# Atomicidad, todas las operaciones de escritura en MongoDB con atómicas a nivel de documentos 
+
+
+# ---------------------------------Read-------------------------------
+db.inventory.find( {} )
+
+
+# Igualdad 
+db.inventory.find( { status: "D" } )
+
+
+# Operadores
+db.inventory.find( { qty: { $gt: 30 } } )
+
+
+# Condición AND
+db.inventory.find( { status: "A", qty: { $lt: 30 } } )
+
+
+# Condición OR con operador
+db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )
+
+
+# Trae el primer documento que cumpla con el filtro de acuerdo al orden natural en que los documentos se encuentren guardados en disco
+db.inventory.findOne( { status: "A", qty: { $lt: 30 } } )
+
+
+# ---------------------------------Update-----------------------------
+# Update One
+db.inventory.updateOne(
+   { item: "paper" },
+   {
+     $set: { "size.uom": "cm", status: "P" },
+     $currentDate: { lastModified: true }
+   })
+# Update Many
+db.inventory.find({qty: {$lt: 50}})
+
+
+db.inventory.updateMany(
+   { "qty": { $lt: 50 } },
+   {
+     $set: { "size.uom": "in", status: "P" },
+     $currentDate: { lastModified: true }
+   }
+)
+
+
+db.inventory.find({qty: {$lt: 50}})
+
+
+# Reemplazar un documento y conservar su _id
+db.inventory.find({item: "paper"})
+
+
+db.inventory.replaceOne(
+   { item: "paper" },
+   { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
+)
+
+
+db.inventory.find({item: "paper"})
+# ---------------------------------Delete-----------------------------
+db.inventory.find({status: "A"})
+# Borrar muchos documentos de acuerdo a un filtro
+db.inventory.deleteMany({ status : "A" })
+
+
+db.inventory.find({status: "D"})
+# Borrar un documento
+db.inventory.deleteOne( { status: "D" } )
+
+
+# Borrar todos los documentos de una base datos
+db.inventory.deleteMany({})
