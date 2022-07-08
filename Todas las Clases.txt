@@ -355,3 +355,45 @@ Clase 20 Diseñando el esquema de clases, cursos y carreras
 Vamos a usar tanto referencias como documentos embebidos para guardar la información de nuestros cursos y carreras. Vamos a crear una colección separada para los cursos y otra para las carreras. Esto significa que, si queremos la información de nuestros cursos, debemos consultar dos colecciones diferentes.
 
 Para solucionar este problema vamos a guardar el nombre del curso junto con la referencia al curso en la colección de cursos. Así, cuando consultemos la colección de carreras, vamos a tener también los nombres. Recuerda que si cambie el nombre del curso debes actualizarlo en ambas colecciones.
+
+Clase 23 Consultas más rápidas con Índices
+
+Los índices nos ayudan a que nuestras consultas sean más rápidas porque, sin ellos, MongoDB debería escanear toda la colección en busca de los resultados.
+
+Tipos de índices:
+
+De un solo campo
+Compuestos
+Multi-llave
+Geoespaciales
+De texto
+Hashed
+
+show dbs
+use platzi-db
+show collections
+db.cursos.getIndexes()
+
+> db.collection.createIndex( { nombre: 'text' } )
+> db.collection.find( { $text: { $search: 'aws' } }, { nombre: 1 } )
+
+clase 24 Recomendaciones de Arquitectura y Paso a Producción
+
+Usar proveedores cloud con alta disponibilidad: AWS, Google Cloud o Azure son muy buenas opciones
+No te compliques pensando en administración de servidores con MongoDB, servicios como MongoDB Atlas o mlab son muy buenas opciones
+Guardar las credenciales en variables de entorno o archivos de configuración fuera del proyecto
+Asegura que tu cluster se encuentra en la mis región del proveedor que tu aplicación
+Has VPC peering entre la VPC de tu aplicación y la VPC de tu cluster
+Cuida la lista de IPs blancas
+Puedes habilitar la autenticación en dos pasos
+Actualiza constantemente tu versión de MongoDB
+Separa los ambientes de desarrollo, test y producción
+Habilita la opción de almacenamiento encriptado
+
+Clase 26 Resumen y Conclusiones
+
+¡Felicitaciones por terminar el Curso MongoDB en Platzi!
+
+Aprendimos qué son, cómo funcionan, qué ventajas tienen y qué tipos de bases de datos NoSQL como MongoDB encontramos en el mercado. Programamos operaciones, agregaciones e índices con buenas prácticas para mejorar el performance y crear una API REST con el CRUD de nuestro proyecto PlatziMongo, usamos la consola, la interfaz gráfica y nuestro lenguaje de programación favorito. Tambien, aprendimos cómo funcionan los drivers y los clusters en la arquitectura de nuestras aplicaciones.
+
+Recuerda resolver los ejercicios, completar el examen, dejar 5 estrellitas y dejar tus dudas o comentarios en la sección de discusiones ????.
